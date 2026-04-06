@@ -51,7 +51,7 @@
             <c:forEach var="stud" items="${allStudents}">
                 <tr>
                     <td>${stud.studentId}</td>
-                    <td><${stud.firstName}</td>
+                    <td>${stud.firstName}</td>
                     <td>${stud.lastName}</td>
                     <td>${stud.yearLevel}</td>
                 </tr>

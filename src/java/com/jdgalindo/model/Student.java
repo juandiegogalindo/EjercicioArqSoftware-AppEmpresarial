@@ -21,8 +21,10 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "STUDENT")
-@NamedQueries(@NamedQuery(name="Student.getAll", query="SELECT e FROM Student e"))
-public class Student implements Serializable{
+@NamedQueries(
+        @NamedQuery(name = "Student.getAll", query = "SELECT e FROM Student e"))
+public class Student implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -72,8 +74,8 @@ public class Student implements Serializable{
         this.lastName = lastName;
         this.yearLevel = yearLevel;
     }
-    
-    public Student(){
-        
+
+    public Student() {
+
     }
 }
