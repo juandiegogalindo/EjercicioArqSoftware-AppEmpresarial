@@ -55,6 +55,7 @@ public class StudentServlet extends HttpServlet {
         if ("Add".equalsIgnoreCase(action)) {
             studentDao.addStudent(student);
         } else if ("Edit".equalsIgnoreCase(action)) {
+            student.setStudentId(studentId);
             studentDao.editStudent(student);
         } else if ("Delete".equalsIgnoreCase(action)) {
             studentDao.deleteStudent(studentId);

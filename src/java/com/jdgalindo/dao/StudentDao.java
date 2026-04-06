@@ -27,10 +27,11 @@ public class StudentDao implements StudentDaoLocal {
     }
 
     @Override
-    public void editStudent(Student studentId) {
-        em.merge(studentId);
+    public void editStudent(Student student) {
+        em.merge(student);
     }
 
+    
     @Override
     public void deleteStudent(int studentId) {
         Student s = em.find(Student.class, studentId);
