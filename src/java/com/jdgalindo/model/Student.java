@@ -20,11 +20,11 @@ import javax.persistence.Table;
  * @author jdgal
  */
 @Entity
-@Table
+@Table(name = "STUDENT")
 @NamedQueries(@NamedQuery(name="Student.getAll", query="SELECT e FROM Student e"))
 public class Student implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private int studentId;
     @Column

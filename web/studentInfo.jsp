@@ -17,20 +17,20 @@
         <form action="./StudentServlet" method="POST">
             <table>
                 <tr>
-                    <td>Studente ID</td>
-                    <td><input tuype=text" name="studentId" value="${student.studentId}" /></td>
+                    <td>Student ID</td>
+                    <td><input type=text" name="studentId" value="${student.studentId}" /></td>
                 </tr>
                 <tr>
                     <td>First Name</td>
-                    <td><input tuype=text" name="firstName" value="${student.firstName}" /></td>
+                    <td><input type=text" name="firstName" value="${student.firstName}" /></td>
                 </tr>
                 <tr>
                     <td>Last Name</td>
-                    <td><input tuype=text" name="lastName" value="${student.lastName}" /></td>
+                    <td><input type=text" name="lastName" value="${student.lastName}" /></td>
                 </tr>
                 <tr>
                     <td>Year Level</td>
-                    <td><input tuype=text" name="yearLevel" value="${student.yearLevel}" /></td>
+                    <td><input type=text" name="yearLevel" value="${student.yearLevel}" /></td>
                 </tr>
                 <tr>
                     <td colspan="2">
@@ -51,7 +51,7 @@
             <c:forEach items="${allStudents}" var="stud">
                 <tr>
                     <td>${stud.studentId}</td>
-                    <td><${stud.firstName}/td>
+                    <td><${stud.firstName}</td>
                     <td>${stud.lastName}</td>
                     <td>${stud.yearLevel}</td>
                 </tr>

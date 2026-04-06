@@ -18,7 +18,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class StudentDao implements StudentDaoLocal {
 
-    @PersistenceContext
+    @PersistenceContext(unitName = "EjercicioArqSoftware-AppEmpresarialCRUDPU")
     private EntityManager em;
 
     @Override
@@ -27,15 +27,15 @@ public class StudentDao implements StudentDaoLocal {
     }
 
     @Override
-    public void editStudent(Student student) {
-        em.merge(student);
+    public void editStudent(Student studentId) {
+        em.merge(studentId);
     }
 
     @Override
     public void deleteStudent(int studentId) {
-        Student student = em.find(Student.class, studentId);
-        if (student != null) {
-            em.remove(student);
+        Student s = em.find(Student.class, studentId);
+        if (s != null) {
+            em.remove(s);
         }
     }
 
@@ -48,5 +48,5 @@ public class StudentDao implements StudentDaoLocal {
     public List<Student> getAllStudents() {
         return em.createNamedQuery("Student.getAll", Student.class).getResultList();
     }
-
+    
 }

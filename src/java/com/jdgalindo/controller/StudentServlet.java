@@ -24,46 +24,48 @@ import javax.servlet.http.HttpServletResponse;
  */
 @WebServlet(name = "StudentServlet", urlPatterns = {"/StudentServlet"})
 public class StudentServlet extends HttpServlet {
+
     @EJB
     private StudentDaoLocal studentDao;
-    
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
         String studentIdStr = request.getParameter("studentId");
-        
+
         int studentId = 0;
-        if(studentIdStr != null && !studentIdStr.equals("")){
+        if (studentIdStr != null && !studentIdStr.equals("")) {
             studentId = Integer.parseInt(studentIdStr);
         }
-        
+
         String firstName = request.getParameter("firstName");
         String lastName = request.getParameter("lastName");
         String yearLevelStr = request.getParameter("yearLevel");
-        
+
         int yearLevel = 0;
-        if(yearLevelStr!=null && !yearLevelStr.equals("")){
+        if (yearLevelStr != null && !yearLevelStr.equals("")) {
             yearLevel = Integer.parseInt(yearLevelStr);
         }
-        
-        Student student = new Student(studentId, firstName, lastName, yearLevel);
-        
-        if ("Add".equalsIgnoreCase(action)){
-            student = new Student(0, firstName, lastName, yearLevel);
+
+        Student student = new Student();
+        student.setFirstName(firstName);
+        student.setLastName(lastName);
+        student.setYearLevel(yearLevel);
+
+        if ("Add".equalsIgnoreCase(action)) {
             studentDao.addStudent(student);
-        } else if ("Edit".equalsIgnoreCase(action)){
+        } else if ("Edit".equalsIgnoreCase(action)) {
             studentDao.editStudent(student);
-        } else if ("Delete".equalsIgnoreCase(action)){
+        } else if ("Delete".equalsIgnoreCase(action)) {
             studentDao.deleteStudent(studentId);
-        } else if ("Search".equalsIgnoreCase(action)){
+        } else if ("Search".equalsIgnoreCase(action)) {
             student = studentDao.getStudent(studentId);
         }
         request.setAttribute("student", student);
-        request.setAttribute("allStudent", studentDao.getAllStudents());
-        request.getRequestDispatcher("student.jsp").forward(request, response);
+        request.setAttribute("allStudents", new java.util.ArrayList());
+        request.getRequestDispatcher("studentInfo.jsp").forward(request, response);
     }
 
-    
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
