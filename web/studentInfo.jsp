@@ -48,7 +48,7 @@
             <th>First Name</th>
             <th>Last Name</th>
             <th>Year Level</th>
-            <c:forEach items="${allStudents}" var="stud">
+            <c:forEach var="stud" items="${allStudents}">
                 <tr>
                     <td>${stud.studentId}</td>
                     <td><${stud.firstName}</td>

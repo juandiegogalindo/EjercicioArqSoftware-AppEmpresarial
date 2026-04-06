@@ -62,7 +62,7 @@ public class StudentServlet extends HttpServlet {
             student = studentDao.getStudent(studentId);
         }
         request.setAttribute("student", student);
-        request.setAttribute("allStudents", new java.util.ArrayList());
+        request.setAttribute("allStudents", studentDao.getAllStudents());
         request.getRequestDispatcher("studentInfo.jsp").forward(request, response);
     }
 
