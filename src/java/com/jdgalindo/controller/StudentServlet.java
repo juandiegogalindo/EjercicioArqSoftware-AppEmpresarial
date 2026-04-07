@@ -5,7 +5,9 @@
  */
 package com.jdgalindo.controller;
 
+import com.jdgalindo.dao.CourseDao;
 import com.jdgalindo.dao.StudentDaoLocal;
+import com.jdgalindo.model.Course;
 import com.jdgalindo.model.Student;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,6 +29,8 @@ public class StudentServlet extends HttpServlet {
 
     @EJB
     private StudentDaoLocal studentDao;
+    @EJB
+    private CourseDao courseDao;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -62,9 +66,21 @@ public class StudentServlet extends HttpServlet {
         } else if ("Search".equalsIgnoreCase(action)) {
             student = studentDao.getStudent(studentId);
         }
+        
+        String courseIdStr = request.getParameter("courseId");
+
+        if (courseIdStr != null && !courseIdStr.equals("")) {
+            int courseId = Integer.parseInt(courseIdStr);
+
+            Course course = courseDao.getCourse(courseId);
+            student.getCourses().add(course);
+        }
+        
         request.setAttribute("student", student);
         request.setAttribute("allStudents", studentDao.getAllStudents());
-        request.getRequestDispatcher("studentInfo.jsp").forward(request, response);
+        request.setAttribute("allCourses", courseDao.getAllCourses());
+        
+        request.getRequestDispatcher("studentInfo.jsp").forward(request, response); 
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
