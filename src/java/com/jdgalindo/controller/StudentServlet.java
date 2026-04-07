@@ -10,35 +10,29 @@ import com.jdgalindo.dao.StudentDaoLocal;
 import com.jdgalindo.model.Course;
 import com.jdgalindo.model.Student;
 import java.io.IOException;
-import java.io.PrintWriter;
-import static java.lang.System.out;
-import java.util.HashSet;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 
-/**
- *
- * @author jdgal
- */
 @WebServlet(name = "StudentServlet", urlPatterns = {"/StudentServlet"})
 public class StudentServlet extends HttpServlet {
 
     @EJB
     private StudentDaoLocal studentDao;
+
     @EJB
     private CourseDao courseDao;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         String action = request.getParameter("action");
         String studentIdStr = request.getParameter("studentId");
 
         int studentId = 0;
-        if (studentIdStr != null && !studentIdStr.equals("")) {
+        if (studentIdStr != null && !studentIdStr.isEmpty()) {
             studentId = Integer.parseInt(studentIdStr);
         }
 
@@ -47,79 +41,97 @@ public class StudentServlet extends HttpServlet {
         String yearLevelStr = request.getParameter("yearLevel");
 
         int yearLevel = 0;
-        if (yearLevelStr != null && !yearLevelStr.equals("")) {
+        if (yearLevelStr != null && !yearLevelStr.isEmpty()) {
             yearLevel = Integer.parseInt(yearLevelStr);
         }
 
+        // 🔥 cursos seleccionados (CLAVE)
+        String[] courseIds = request.getParameterValues("courses");
+
         Student student = new Student();
-        student.setFirstName(firstName);
-        student.setLastName(lastName);
-        student.setYearLevel(yearLevel);
 
         if ("Add".equalsIgnoreCase(action)) {
+
+            student.setFirstName(firstName);
+            student.setLastName(lastName);
+            student.setYearLevel(yearLevel);
+
+            // 🔥 asignar cursos ANTES de guardar
+            if (courseIds != null) {
+                for (String id : courseIds) {
+                    Course course = courseDao.getCourse(Integer.parseInt(id));
+                    student.getCourses().add(course);
+
+                    // relación bidireccional (PRO)
+                    course.getStudents().add(student);
+                }
+            }
+
             studentDao.addStudent(student);
+
         } else if ("Edit".equalsIgnoreCase(action)) {
-            student.setStudentId(studentId);
-            studentDao.editStudent(student);
+
+            Student existingStudent = studentDao.getStudent(studentId);
+
+            if (existingStudent != null) {
+
+                existingStudent.setFirstName(firstName);
+                existingStudent.setLastName(lastName);
+                existingStudent.setYearLevel(yearLevel);
+
+                // 🔥 limpiar cursos anteriores
+                existingStudent.getCourses().clear();
+
+                // 🔥 asignar nuevos cursos
+                if (courseIds != null) {
+                    for (String id : courseIds) {
+                        Course course = courseDao.getCourse(Integer.parseInt(id));
+                        existingStudent.getCourses().add(course);
+
+                        // relación bidireccional (opcional pero pro)
+                        course.getStudents().add(existingStudent);
+                    }
+                }
+
+                studentDao.editStudent(existingStudent);
+                student = existingStudent;
+            }
+
         } else if ("Delete".equalsIgnoreCase(action)) {
+
             studentDao.deleteStudent(studentId);
+
         } else if ("Search".equalsIgnoreCase(action)) {
+
             student = studentDao.getStudent(studentId);
-        }
-        
-        String courseIdStr = request.getParameter("courseId");
 
-        if (courseIdStr != null && !courseIdStr.equals("")) {
-            int courseId = Integer.parseInt(courseIdStr);
-
-            Course course = courseDao.getCourse(courseId);
-            student.getCourses().add(course);
+            if (student == null) {
+                student = new Student(); // evita errores en JSP
+            }
         }
-        
+
+        // 🔥 enviar datos a la vista
         request.setAttribute("student", student);
         request.setAttribute("allStudents", studentDao.getAllStudents());
         request.setAttribute("allCourses", courseDao.getAllCourses());
-        
-        request.getRequestDispatcher("studentInfo.jsp").forward(request, response); 
+
+        request.getRequestDispatcher("studentInfo.jsp").forward(request, response);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Student Servlet with ManyToMany relationship";
+    }
 }

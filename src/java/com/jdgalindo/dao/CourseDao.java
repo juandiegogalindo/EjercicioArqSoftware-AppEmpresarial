@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.jdgalindo.dao;
 
 import com.jdgalindo.model.Course;
@@ -16,7 +15,6 @@ import javax.persistence.PersistenceContext;
  *
  * @author jdgal
  */
-
 @Stateless
 public class CourseDao {
 
@@ -28,10 +26,24 @@ public class CourseDao {
     }
 
     public List<Course> getAllCourses() {
-        return em.createQuery("SELECT c FROM Course c", Course.class).getResultList();
+        return em.createQuery("SELECT c FROM Course c ORDER BY c.courseId", Course.class)
+                .getResultList();
     }
 
     public Course getCourse(int id) {
         return em.find(Course.class, id);
+    }
+
+    // 🔥 EDITAR CURSO
+    public void editCourse(Course course) {
+        em.merge(course);
+    }
+
+    // 🔥 ELIMINAR CURSO
+    public void deleteCourse(int id) {
+        Course course = em.find(Course.class, id);
+        if (course != null) {
+            em.remove(course);
+        }
     }
 }

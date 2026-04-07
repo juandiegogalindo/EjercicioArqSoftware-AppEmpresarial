@@ -31,7 +31,6 @@ public class StudentDao implements StudentDaoLocal {
         em.merge(student);
     }
 
-    
     @Override
     public void deleteStudent(int studentId) {
         Student s = em.find(Student.class, studentId);
@@ -47,7 +46,8 @@ public class StudentDao implements StudentDaoLocal {
 
     @Override
     public List<Student> getAllStudents() {
-        return em.createNamedQuery("Student.getAll", Student.class).getResultList();
+        return em.createQuery("SELECT s FROM Student s", Student.class)
+                .getResultList();
     }
-    
+
 }
